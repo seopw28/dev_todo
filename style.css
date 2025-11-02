@@ -81,11 +81,12 @@ header h1 {
 .sub-tab:hover {
     color: #8ba3ff;
     background: rgba(74, 144, 226, 0.1);
+    border-bottom-color: transparent; /* hover 시 파란색 라인 제거 */
 }
 
 .sub-tab.active {
-    color: #4a90e2;
-    border-bottom-color: #4a90e2;
+    color: #8ba3ff;
+    border-bottom-color: transparent; /* 파란색 선 제거 */
     background: rgba(74, 144, 226, 0.05);
 }
 
@@ -203,10 +204,15 @@ header h1 {
     display: flex;
     align-items: center;
     gap: 15px;
-    transition: all 0.3s ease;
-    animation: slideIn 0.3s ease;
-    border: 1px solid #3a3a3a;
+    /* transition을 더 구체적으로 지정하여 불필요한 리렌더링 방지 */
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    /* 애니메이션 제거하여 반짝임 방지 */
+    border: 1px solid #2a2a2a; /* 배경색과 동일하게 설정하여 선이 보이지 않게 */
+    cursor: pointer; /* 클릭 가능 표시 */
+    user-select: none; /* 텍스트 선택 방지 */
 }
+
+/* 드래그 관련 스타일 완전 제거 */
 
 @keyframes slideIn {
     from {
@@ -222,7 +228,7 @@ header h1 {
 .todo-item:hover {
     background: #2f2f2f;
     transform: translateX(5px);
-    border-color: #4a4a4a;
+    border-color: #2f2f2f; /* hover 시에도 배경색과 동일하게 유지 */
 }
 
 .todo-content {
@@ -303,6 +309,280 @@ header h1 {
     color: #dc3545;
     background: rgba(220, 53, 69, 0.1);
     transform: scale(1.05);
+}
+
+/* 휴지통 비우기 버튼 */
+.btn-empty-trash {
+    padding: 12px 24px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 0 auto;
+    display: block;
+}
+
+.btn-empty-trash:hover {
+    background: #c82333;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
+}
+
+.trash-actions {
+    margin-bottom: 20px;
+    text-align: center;
+    padding: 10px 0;
+}
+
+/* 커스텀 모달 스타일 */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.2s ease;
+}
+
+.modal-overlay.show {
+    display: flex;
+}
+
+.modal-container {
+    background: #2a2a2a;
+    border-radius: 24px;
+    padding: 0;
+    max-width: 90%;
+    width: 420px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    animation: slideUp 0.3s ease;
+    overflow: hidden;
+}
+
+.modal-header {
+    padding: 28px 28px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, transparent 100%);
+}
+
+.modal-title {
+    margin: 0;
+    font-size: 1.3em;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.02em;
+}
+
+.modal-body {
+    padding: 24px 28px;
+}
+
+.modal-message {
+    margin: 0;
+    font-size: 1em;
+    color: #cccccc;
+    line-height: 1.6;
+    white-space: pre-line; /* 줄바꿈 문자(\n) 지원 */
+}
+
+.modal-label {
+    display: block;
+    margin: 0 0 12px 0;
+    font-size: 0.9em;
+    color: #aaaaaa;
+    font-weight: 500;
+}
+
+.modal-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #3a3a3a;
+    border-radius: 8px;
+    font-size: 1em;
+    background: #1e1e1e;
+    color: #e0e0e0;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+
+.modal-input:focus {
+    outline: none;
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+    background: #252525;
+}
+
+.modal-input::placeholder {
+    color: #666;
+}
+
+.modal-footer {
+    padding: 20px 24px 24px;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    flex-direction: column-reverse; /* 세로 방향, 역순으로 확인이 위로 */
+}
+
+.modal-btn {
+    padding: 14px 28px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 90px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.modal-btn-cancel {
+    background: #3a3a3a;
+    color: #ffffff;
+}
+
+.modal-btn-cancel:hover {
+    background: #4a4a4a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.modal-btn-confirm {
+    background: #4a90e2;
+    color: #ffffff;
+}
+
+.modal-btn-confirm:hover {
+    background: #3a7bc8;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(74, 144, 226, 0.4);
+}
+
+.modal-btn-confirm:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* 토스트 팝업 스타일 */
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 3000;
+    opacity: 0;
+    transform: translateX(400px);
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+}
+
+.toast-content {
+    background: #2a2a2a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 16px 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-width: 300px;
+    max-width: 400px;
+}
+
+.toast-message {
+    flex: 1;
+    color: #ffffff;
+    font-size: 0.95em;
+    line-height: 1.5;
+}
+
+.toast-close {
+    background: #4a90e2;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 20px;
+    font-size: 0.9em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.toast-close:hover {
+    background: #3a7bc8;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+}
+
+.toast-close:active {
+    transform: translateY(0);
+}
+
+/* 모바일에서 토스트 스타일 */
+@media (max-width: 600px) {
+    .toast {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        transform: translateY(-100px);
+    }
+    
+    .toast.show {
+        transform: translateY(0);
+    }
+    
+    .toast-content {
+        min-width: auto;
+        max-width: 100%;
+        padding: 14px 18px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+    
+    .toast-close {
+        width: 100%;
+        padding: 10px 20px;
+    }
 }
 
 /* 바텀 네비게이션 - 다크 모드 */
@@ -408,12 +688,12 @@ header h1 {
 }
 
 .todo-list::-webkit-scrollbar-thumb {
-    background: #4a90e2;
+    background: #3a3a3a; /* 파란색 제거, 회색으로 변경 */
     border-radius: 10px;
 }
 
 .todo-list::-webkit-scrollbar-thumb:hover {
-    background: #3a7bc8;
+    background: #4a4a4a; /* 파란색 제거, 약간 밝은 회색으로 변경 */
 }
 
 /* 반응형 디자인 */
@@ -434,6 +714,30 @@ header h1 {
     .btn-add {
         width: 48px; /* 고정 크기 유지 */
         flex-shrink: 0;
+    }
+    
+    /* 모바일에서 모달 크기 조정 */
+    .modal-container {
+        width: 95%;
+        margin: 20px;
+    }
+    
+    .modal-header {
+        padding: 24px 20px 18px;
+    }
+    
+    .modal-body {
+        padding: 20px 20px;
+    }
+    
+    .modal-footer {
+        padding: 18px 20px 24px;
+        flex-direction: column-reverse; /* 모바일에서도 확인이 위로 */
+    }
+    
+    .modal-btn {
+        width: 100%;
+        padding: 16px 24px;
     }
 
 }

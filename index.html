@@ -22,9 +22,9 @@
 
         <!-- 서브탭 네비게이션 -->
         <nav class="sub-tabs">
-            <button class="sub-tab active" data-filter="all">전체</button>
-            <button class="sub-tab" data-filter="active">활성</button>
+            <button class="sub-tab active" data-filter="active">할일</button>
             <button class="sub-tab" data-filter="completed">완료</button>
+            <button class="sub-tab" data-filter="trash">휴지통</button>
         </nav>
 
         <div class="todo-app">
@@ -42,6 +42,47 @@
         </div>
     </div>
 
+    <!-- 커스텀 모달 -->
+    <div id="customModal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">확인</h3>
+            </div>
+            <div class="modal-body">
+                <p class="modal-message" id="modalMessage">정말 실행하시겠습니까?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-confirm" id="modalConfirmBtn">확인</button>
+                <button class="modal-btn modal-btn-cancel" id="modalCancelBtn">취소</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 입력 모달 -->
+    <div id="inputModal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 class="modal-title" id="inputModalTitle">제목 수정</h3>
+            </div>
+            <div class="modal-body">
+                <label for="inputModalField" class="modal-label" id="inputModalLabel">내용을 입력하세요:</label>
+                <input type="text" id="inputModalField" class="modal-input" placeholder="" />
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-confirm" id="inputModalConfirmBtn">확인</button>
+                <button class="modal-btn modal-btn-cancel" id="inputModalCancelBtn">취소</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 토스트 팝업 -->
+    <div id="toast" class="toast">
+        <div class="toast-content">
+            <span class="toast-message" id="toastMessage"></span>
+            <button class="toast-close" id="toastCloseBtn">확인</button>
+        </div>
+    </div>
+
     <!-- 바텀 네비게이션 -->
     <nav class="bottom-navigation">
         <a href="index.html" class="nav-item active">
@@ -51,6 +92,10 @@
         <a href="weather/index.html" class="nav-item">
             <span class="nav-icon">🌤️</span>
             <span class="nav-label">날씨</span>
+        </a>
+        <a href="chiko/index.html" class="nav-item">
+            <span class="nav-icon">🤖</span>
+            <span class="nav-label">치코</span>
         </a>
     </nav>
 
