@@ -156,7 +156,7 @@ function showInputModal(title, label, defaultValue = '') {
 }
 
 // 토스트 팝업 함수 (자동으로 사라짐)
-function showToast(message, duration = 2000) {
+function showToast(message, duration = 1500) {
     const toast = document.getElementById('toast');
     const toastMessage = document.getElementById('toastMessage');
     const toastCloseBtn = document.getElementById('toastCloseBtn');
@@ -172,7 +172,7 @@ function showToast(message, duration = 2000) {
     
     toastCloseBtn.addEventListener('click', handleClose);
     
-    // 자동으로 닫기 (1.2초 후)
+    // 자동으로 닫기
     setTimeout(() => {
         if (toast.classList.contains('show')) {
             toast.classList.remove('show');
@@ -267,6 +267,16 @@ document.addEventListener('DOMContentLoaded', () => {
     todoList = document.getElementById('todoList');
     filterBtns = document.querySelectorAll('.sub-tab');
 
+    // 초기 필터에 따라 입력 UI 표시/숨김 처리 (할일 탭에서만 표시)
+    const inputSection = document.querySelector('.input-section');
+    if (inputSection) {
+        if (currentFilter === 'trash' || currentFilter === 'completed') {
+            inputSection.style.display = 'none';
+        } else {
+            inputSection.style.display = 'block';
+        }
+    }
+
     // 이벤트 리스너 등록
     addBtn.addEventListener('click', addTodo);
     todoInput.addEventListener('keypress', (e) => {
@@ -281,6 +291,17 @@ document.addEventListener('DOMContentLoaded', () => {
             filterBtns.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             currentFilter = btn.dataset.filter;
+            
+            // 휴지통/완료 탭에서는 입력 UI 숨기기
+            const inputSection = document.querySelector('.input-section');
+            if (inputSection) {
+                if (currentFilter === 'trash' || currentFilter === 'completed') {
+                    inputSection.style.display = 'none';
+                } else {
+                    inputSection.style.display = 'block';
+                }
+            }
+            
             renderTodos();
         });
     });
@@ -314,7 +335,7 @@ async function addTodo() {
     const text = todoInput.value.trim();
 
     if (text === '') {
-        showToast('To Do를 입력해주세요!', 2000);
+        showToast('To Do를 입력해주세요!', 1500);
         return;
     }
 
@@ -517,8 +538,8 @@ function renderTodos() {
                 <span class="todo-text">${escapeHtml(todo.text)}</span>
             </div>
             <div class="todo-actions" onclick="event.stopPropagation();">
-                ${!isTrash ? `<button class="btn-edit" onclick="editTodo('${todoId}'); event.stopPropagation();" title="수정">✎</button>` : ''}
-                <button class="btn-delete" onclick="deleteTodo('${todoId}'); event.stopPropagation();" title="${isTrash ? '완전 삭제' : '휴지통으로'}">🗑</button>
+                ${!isTrash ? `<button class="btn-edit" onclick="editTodo('${todoId}'); event.stopPropagation();" title="수정"><i class="fas fa-pencil-alt"></i></button>` : ''}
+                <button class="btn-delete" onclick="deleteTodo('${todoId}'); event.stopPropagation();" title="${isTrash ? '완전 삭제' : '휴지통으로'}"><i class="fas fa-trash"></i></button>
             </div>
         </div>
         `;
@@ -590,6 +611,8 @@ function getEmptyMessage() {
             return '활성화된 To Do가 없습니다.';
         case 'completed':
             return '완료된 To Do가 없습니다.';
+        case 'trash':
+            return '삭제된 To Do가 없습니다.';
         default:
             return 'To Do를 추가해보세요!';
     }

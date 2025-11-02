@@ -196,6 +196,67 @@ async function fetchWeather(query) {
     }
 }
 
+// 날씨 코드에 따른 Font Awesome 아이콘 매핑
+function getWeatherIconClass(conditionCode, conditionText) {
+    const code = conditionCode || 1000;
+    const text = (conditionText || '').toLowerCase();
+    
+    // 맑음
+    if (code === 1000 || text.includes('clear') || text.includes('맑')) {
+        const hour = new Date().getHours();
+        return hour >= 6 && hour < 18 ? 'fa-sun' : 'fa-moon';
+    }
+    
+    // 구름
+    if (code === 1003 || code === 1006 || code === 1009 || text.includes('cloud') || text.includes('구름')) {
+        if (code === 1003 || text.includes('partly')) {
+            return 'fa-cloud-sun';
+        }
+        return 'fa-cloud';
+    }
+    
+    // 비
+    if ((code >= 1063 && code <= 1087) || text.includes('rain') || text.includes('비') || text.includes('shower')) {
+        if (code === 1273 || code === 1276 || text.includes('thunder') || text.includes('천둥')) {
+            return 'fa-cloud-bolt';
+        }
+        return 'fa-cloud-rain';
+    }
+    
+    // 눈
+    if ((code >= 1114 && code <= 1207) || text.includes('snow') || text.includes('눈')) {
+        return 'fa-snowflake';
+    }
+    
+    // 안개
+    if (code === 1030 || code === 1135 || code === 1147 || text.includes('mist') || text.includes('fog') || text.includes('안개')) {
+        return 'fa-smog';
+    }
+    
+    // 기본값
+    return 'fa-sun';
+}
+
+// 날씨 아이콘 색상 결정 함수
+function getWeatherIconColor(iconClass) {
+    if (iconClass === 'fa-sun') {
+        return '#ffd700'; // 노란색
+    } else if (iconClass === 'fa-moon') {
+        return '#e0e0e0'; // 흰색
+    } else if (iconClass === 'fa-cloud' || iconClass === 'fa-cloud-sun') {
+        return '#a0a0a0'; // 회색
+    } else if (iconClass === 'fa-cloud-rain') {
+        return '#4a90e2'; // 파란색
+    } else if (iconClass === 'fa-cloud-bolt') {
+        return '#ffd700'; // 노란색 (천둥)
+    } else if (iconClass === 'fa-snowflake') {
+        return '#ffffff'; // 하얀색
+    } else if (iconClass === 'fa-smog') {
+        return '#888888'; // 회색
+    }
+    return '#ffd700'; // 기본값: 노란색
+}
+
 // 날씨 정보 표시 함수
 function displayWeather(data) {
     // 위치 정보
@@ -216,9 +277,12 @@ function displayWeather(data) {
     // 온도 정보
     temp.textContent = Math.round(data.current.temp_c);
 
-    // 날씨 아이콘
-    weatherIcon.src = data.current.condition.icon;
-    weatherIcon.alt = data.current.condition.text;
+    // 날씨 아이콘 (Font Awesome)
+    const iconClass = getWeatherIconClass(data.current.condition.code, data.current.condition.text);
+    const iconColor = getWeatherIconColor(iconClass);
+    weatherIcon.className = `fas ${iconClass} weather-icon`;
+    weatherIcon.style.color = iconColor;
+    weatherIcon.setAttribute('title', data.current.condition.text);
 
     // 날씨 상태
     weatherCondition.textContent = data.current.condition.text;

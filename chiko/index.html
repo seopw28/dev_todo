@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>치코 - AI 어시스턴트</title>
+    <!-- Pretendard 폰트 (Toss 스타일) -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+    <!-- Font Awesome 아이콘 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -15,41 +19,18 @@
 
     <!-- 앱 헤더 -->
     <div class="app-header">
-        <button class="back-btn" onclick="window.location.href='../index.html'">&lt;</button>
-        <h1 class="app-title">치코</h1>
-        <button class="settings-btn" id="settingsBtn" title="설정">⚙️</button>
-    </div>
-
-    <!-- 설정 모달 -->
-    <div id="settingsModal" class="settings-modal">
-        <div class="settings-modal-content">
-            <div class="settings-modal-header">
-                <h3>API 키 설정</h3>
-                <button class="settings-close" id="settingsCloseBtn">✕</button>
-            </div>
-            <div class="settings-modal-body">
-                <p class="settings-description">
-                    자신의 API 키를 입력하면 더 나은 성능과 높은 사용량 제한을 사용할 수 있습니다.<br>
-                    <a href="https://aistudio.google.com/app/apikey" target="_blank">API 키 생성하기</a>
-                </p>
-                <label for="apiKeyInput" class="settings-label">API 키:</label>
-                <input 
-                    type="text" 
-                    id="apiKeyInput" 
-                    class="settings-input" 
-                    placeholder="AIzaSy..."
-                    value=""
-                />
-                <button id="saveApiKeyBtn" class="settings-save-btn">저장</button>
-                <button id="useDefaultBtn" class="settings-default-btn">기본 키 사용</button>
-            </div>
-        </div>
+        <h1 class="app-title">대화</h1>
     </div>
 
     <!-- 채팅 컨테이너 -->
     <main class="app-container">
+        <!-- 캐릭터 선택 바 -->
+        <div class="character-selector" id="characterSelector">
+            <!-- JavaScript로 동적으로 생성됨 -->
+        </div>
+        
         <div class="main-content chat-content">
-            <div class="chat-messages" id="chatMessages">
+                   <div class="chat-messages" id="chatMessages">
                 <div class="chat-message bot-message">
                     <div class="message-content">
                         <p>안녕하세요! 저는 치코입니다. 무엇을 도와드릴까요?</p>
@@ -72,24 +53,41 @@
         </div>
     </main>
 
+    <!-- 삭제 확인 모달 -->
+    <div id="deleteConfirmModal" class="delete-modal-overlay">
+        <div class="delete-modal-container">
+            <div class="delete-modal-body">
+                <p class="delete-modal-message">삭제하시겠습니까?</p>
+            </div>
+            <div class="delete-modal-footer">
+                <div class="delete-modal-top-buttons">
+                    <button class="delete-modal-btn delete-modal-btn-cancel" id="deleteCancelBtn">취소</button>
+                    <button class="delete-modal-btn delete-modal-btn-confirm" id="deleteConfirmBtn">확인</button>
+                </div>
+                <button class="delete-modal-btn delete-modal-btn-reset" id="deleteResetBtn">현 채팅방 초기화</button>
+            </div>
+        </div>
+    </div>
+
     <!-- 바텀 네비게이션 -->
     <nav class="bottom-navigation">
-        <a href="../index.html" class="nav-item">
-            <span class="nav-icon">📝</span>
-            <span class="nav-label">To Do</span>
-        </a>
         <a href="../weather/index.html" class="nav-item">
-            <span class="nav-icon">🌤️</span>
+            <i class="fas fa-cloud-sun nav-icon"></i>
             <span class="nav-label">날씨</span>
         </a>
         <a href="index.html" class="nav-item active">
-            <span class="nav-icon">🤖</span>
-            <span class="nav-label">치코</span>
+            <i class="fas fa-heart nav-icon"></i>
+            <span class="nav-label">대화</span>
+        </a>
+        <a href="../index.html" class="nav-item">
+            <i class="fas fa-clipboard-list nav-icon"></i>
+            <span class="nav-label">To Do</span>
         </a>
     </nav>
 
     <!-- 설정 파일 로드 -->
     <script src="config.js"></script>
+    <script src="characters.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

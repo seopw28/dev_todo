@@ -7,6 +7,10 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#667eea">
     <title>오늘 날씨</title>
+    <!-- Pretendard 폰트 (Toss 스타일) -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+    <!-- Font Awesome 아이콘 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -16,19 +20,15 @@
             <span class="status-time">12:34</span>
         </div>
         <div class="status-right">
-            <span class="status-battery">🔋</span>
-            <span class="status-signal">📶</span>
+            <i class="fas fa-battery-full status-battery"></i>
+            <i class="fas fa-signal status-signal"></i>
         </div>
     </div>
 
     <div class="app-container">
         <!-- 앱 헤더 -->
         <header class="app-header">
-            <a href="../index.html" class="back-button">
-                <span class="back-icon">←</span>
-            </a>
             <h1 class="app-title">오늘 날씨</h1>
-            <div class="header-spacer"></div>
         </header>
 
         <!-- 메인 콘텐츠 -->
@@ -37,10 +37,12 @@
             <section class="search-section">
                 <div class="input-group">
                     <input type="text" id="cityInput" placeholder="도시명 검색">
-                    <button id="searchBtn" class="search-button">🔍</button>
+                    <button id="searchBtn" class="search-button">
+                        <i class="fas fa-search"></i>
+                    </button>
                 </div>
                 <button id="getLocationBtn" class="location-btn">
-                    <span class="btn-icon">📍</span>
+                    <i class="fas fa-map-marker-alt btn-icon"></i>
                     <span>현재 위치</span>
                 </button>
             </section>
@@ -59,7 +61,7 @@
                         <span class="unit">°C</span>
                     </div>
                     <div class="condition">
-                        <img id="weatherIcon" src="" alt="날씨 아이콘">
+                        <i id="weatherIcon" class="fas fa-sun weather-icon"></i>
                         <p id="weatherCondition">-</p>
                     </div>
                 </div>
@@ -98,17 +100,17 @@
 
     <!-- 바텀 네비게이션 -->
     <nav class="bottom-navigation">
-        <a href="../index.html" class="nav-item">
-            <span class="nav-icon">📝</span>
-            <span class="nav-label">To Do</span>
-        </a>
         <a href="index.html" class="nav-item active">
-            <span class="nav-icon">🌤️</span>
+            <i class="fas fa-cloud-sun nav-icon"></i>
             <span class="nav-label">날씨</span>
         </a>
         <a href="../chiko/index.html" class="nav-item">
-            <span class="nav-icon">🤖</span>
-            <span class="nav-label">치코</span>
+            <i class="fas fa-heart nav-icon"></i>
+            <span class="nav-label">대화</span>
+        </a>
+        <a href="../index.html" class="nav-item">
+            <i class="fas fa-clipboard-list nav-icon"></i>
+            <span class="nav-label">To Do</span>
         </a>
     </nav>
 

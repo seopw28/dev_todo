@@ -1,5 +1,15 @@
 /* 치코 채팅 페이지 전용 스타일 */
 
+/* 폰트 설정 */
+body {
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', '맑은 고딕', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    letter-spacing: -0.01em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
 .status-bar {
     position: fixed;
     top: 0;
@@ -27,34 +37,21 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center; /* 중앙 정렬 */
     padding: 0 20px;
     z-index: 1000;
 }
 
-.back-btn {
-    background: transparent;
-    border: none;
-    color: #ffffff;
-    font-size: 1.5em;
-    cursor: pointer;
-    padding: 8px 12px;
-    margin-right: 12px;
-    border-radius: 8px;
-    transition: background-color 0.2s ease;
-}
-
-.back-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-}
+/* 뒤로가기 버튼 제거됨 - 네비게이션으로 이동 */
 
 .app-title {
     margin: 0;
-    font-size: 1.3em;
-    font-weight: 600;
+    font-size: 1.25em;
+    font-weight: 700;
     color: #ffffff;
-    flex: 1;
     text-align: center;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
 }
 
 .settings-btn {
@@ -67,6 +64,13 @@
     border-radius: 8px;
     transition: background-color 0.2s ease;
     margin-left: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.settings-btn i {
+    font-size: inherit;
 }
 
 .settings-btn:hover {
@@ -76,24 +80,145 @@
 .app-container {
     margin-top: 112px; /* 상태바(44px) + 헤더(68px) */
     min-height: calc(100vh - 112px);
-    padding-bottom: 0;
+    padding-bottom: 70px; /* 바텀 네비게이션 공간 확보 */
     background: #1a1a1a;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 캐릭터 선택 바 */
+.character-selector {
+    display: flex;
+    gap: 12px;
+    padding: 12px 20px;
+    background: #1e1e1e;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    overflow-x: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+    scroll-behavior: smooth;
+    flex-shrink: 0; /* 항상 보이도록 고정 */
+}
+
+.character-selector::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
+
+.character-item {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    background: #2a2a2a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px; /* 더 둥글게 (12px → 16px) */
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease; /* all 대신 구체적으로 지정 */
+    min-width: 80px;
+    overflow: hidden; /* 내부 콘텐츠가 둥근 모서리를 벗어나지 않게 */
+    will-change: background-color, border-color, box-shadow; /* 성능 최적화 */
+}
+
+.character-item:hover {
+    background: #333;
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.character-item.active {
+    background: #4a90e2;
+    border-color: #4a90e2;
+    box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+    border-radius: 16px; /* 명시적으로 둥근 모서리 유지 */
+}
+
+.character-icon {
+    font-size: 1.8em;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.character-icon i {
+    font-size: inherit;
+}
+
+.character-name {
+    font-size: 11px;
+    color: #cccccc;
+    text-align: center;
+    white-space: nowrap;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1.4;
+}
+
+.character-item.active .character-name {
+    color: #ffffff;
+    font-weight: 600;
 }
 
 .chat-content {
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 112px - 70px); /* 바텀 네비게이션 높이 제외 */
+    flex: 1; /* 남은 공간을 모두 차지 */
+    min-height: 0; /* flex에서 overflow를 위해 필요 */
     padding: 0;
+    position: relative;
+    overflow: hidden; /* 내부 요소만 스크롤 */
 }
 
 .chat-messages {
     flex: 1;
     overflow-y: auto;
+    overflow-x: hidden;
     padding: 20px;
     display: flex;
     flex-direction: column;
     gap: 16px;
+    position: relative;
+    min-height: 0; /* flex에서 overflow를 위해 필요 */
+}
+
+/* 채팅 배경 이미지 오버레이 */
+.chat-messages::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.15;
+    z-index: 0;
+    transition: opacity 0.5s ease;
+}
+
+.chat-messages > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* 역할별 배경 이미지 */
+.chat-messages.bg-lover::before {
+    background-image: url('https://source.unsplash.com/1600x900/?romantic,couple,love,pink');
+}
+
+.chat-messages.bg-secretary::before {
+    background-image: url('https://source.unsplash.com/1600x900/?office,business,professional,blue');
+}
+
+.chat-messages.bg-doctor::before {
+    background-image: url('https://source.unsplash.com/1600x900/?medical,doctor,hospital,white');
+}
+
+.chat-messages.bg-friend::before {
+    background-image: url('https://source.unsplash.com/1600x900/?friends,happy,fun,smile');
 }
 
 .chat-message {
@@ -103,10 +228,20 @@
 
 .chat-message.user-message {
     justify-content: flex-end;
+    cursor: pointer; /* 길게 누를 수 있음을 시각적으로 표시 */
+    user-select: none; /* 텍스트 선택 방지 */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 
 .chat-message.bot-message {
     justify-content: flex-start;
+    cursor: pointer; /* 길게 누를 수 있음을 시각적으로 표시 */
+    user-select: none; /* 텍스트 선택 방지 */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 
 .message-content {
@@ -132,7 +267,10 @@
 
 .message-content p {
     margin: 0;
-    font-size: 0.95em;
+    font-size: 15px;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    line-height: 1.6;
 }
 
 .chat-input-container {
@@ -142,6 +280,8 @@
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     position: relative;
     z-index: 999; /* 네비게이션보다 낮은 z-index */
+    flex-shrink: 0; /* 항상 보이도록 고정 */
+    display: block !important; /* 명시적으로 표시 */
 }
 
 .chat-input-wrapper {
@@ -155,11 +295,14 @@
     padding: 12px 16px;
     border: 2px solid #3a3a3a;
     border-radius: 24px;
-    font-size: 1em;
+    font-size: 15px;
+    font-weight: 400;
     background: #2a2a2a;
     color: #e0e0e0;
     box-sizing: border-box;
     transition: all 0.2s ease;
+    letter-spacing: -0.01em;
+    line-height: 1.5;
 }
 
 .chat-input:focus {
@@ -179,12 +322,14 @@
     color: #ffffff;
     border: none;
     border-radius: 24px;
-    font-size: 1em;
+    font-size: 15px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
     white-space: nowrap;
     flex-shrink: 0;
+    letter-spacing: -0.01em;
+    line-height: 1.5;
 }
 
 .send-btn:hover {
@@ -270,6 +415,133 @@
         padding: 12px 20px;
         font-size: 0.9em;
     }
+}
+
+/* 삭제 확인 모달 스타일 */
+.delete-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.delete-modal-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.delete-modal-container {
+    background: #2a2a2a;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+    min-width: 280px;
+    max-width: 400px;
+    width: calc(100% - 40px);
+    overflow: hidden;
+    transform: scale(0.95);
+    transition: transform 0.3s ease;
+}
+
+.delete-modal-overlay.show .delete-modal-container {
+    transform: scale(1);
+}
+
+.delete-modal-body {
+    padding: 24px 24px 16px;
+}
+
+.delete-modal-message {
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+    text-align: center;
+    margin: 0;
+}
+
+.delete-modal-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 0 24px 24px;
+}
+
+.delete-modal-top-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.delete-modal-btn {
+    padding: 14px 24px;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    letter-spacing: -0.01em;
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    flex: 1;
+}
+
+.delete-modal-btn-confirm {
+    background: #4a90e2;
+    color: #ffffff;
+}
+
+.delete-modal-btn-confirm:hover {
+    background: #3a7bc8;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(74, 144, 226, 0.4);
+}
+
+.delete-modal-btn-confirm:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
+}
+
+.delete-modal-btn-cancel {
+    background: rgba(255, 255, 255, 0.1);
+    color: #cccccc;
+}
+
+.delete-modal-btn-cancel:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+}
+
+.delete-modal-btn-cancel:active {
+    transform: translateY(0);
+}
+
+.delete-modal-btn-reset {
+    width: 100%;
+    background: rgba(255, 100, 100, 0.15);
+    color: #ff6b6b;
+    border: 1px solid rgba(255, 100, 100, 0.3);
+}
+
+.delete-modal-btn-reset:hover {
+    background: rgba(255, 100, 100, 0.25);
+    color: #ff5252;
+    border-color: rgba(255, 100, 100, 0.4);
+}
+
+.delete-modal-btn-reset:active {
+    transform: translateY(0);
+    background: rgba(255, 100, 100, 0.2);
 }
 
 /* 설정 모달 스타일 */
