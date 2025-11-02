@@ -19,11 +19,12 @@
     <script src="firebase-config.js"></script>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>📝 To Do</h1>
-        </header>
+    <!-- 앱 헤더 -->
+    <div class="app-header">
+        <h1 class="app-title">To Do</h1>
+    </div>
 
+    <div class="container">
         <!-- 서브탭 네비게이션 -->
         <nav class="sub-tabs">
             <button class="sub-tab active" data-filter="active">할일</button>
@@ -91,15 +92,12 @@
     <nav class="bottom-navigation">
         <a href="weather/index.html" class="nav-item">
             <i class="fas fa-cloud-sun nav-icon"></i>
-            <span class="nav-label">날씨</span>
         </a>
         <a href="chiko/index.html" class="nav-item">
-            <i class="fas fa-heart nav-icon"></i>
-            <span class="nav-label">대화</span>
+            <i class="fas fa-comment nav-icon"></i>
         </a>
         <a href="index.html" class="nav-item active">
             <i class="fas fa-clipboard-list nav-icon"></i>
-            <span class="nav-label">To Do</span>
         </a>
     </nav>
 
