@@ -16,7 +16,7 @@ body {
     background: #0f0f0f;
     min-height: 100vh;
     min-height: 100dvh; /* 동적 뷰포트 높이 (모바일 브라우저 주소창 고려) */
-    padding: 12px 12px max(56px, env(safe-area-inset-bottom) + 56px) 12px; /* 네비게이션(56px) + 브라우저 옵션 바 고려 */
+    padding: 12px; /* 네비게이션은 fixed이므로 padding 하단 제거, 전체 페이지가 스크롤되도록 */
     position: relative;
     box-sizing: border-box;
     color: #e0e0e0;
@@ -26,6 +26,7 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
+    /* overflow-y: auto는 기본값으로 스크롤 가능 */
 }
 
 .container {
@@ -37,9 +38,10 @@ body {
     overflow: visible;
     margin: 0 auto;
     margin-top: calc(40px + max(6px, env(safe-area-inset-top))); /* 공통 헤더 높이(40px) + safe-area */
+    margin-bottom: calc(56px + max(0px, env(safe-area-inset-bottom)) + 24px); /* 네비게이션(56px) + safe-area + 여백 */
     position: relative;
     z-index: 1;
-    min-height: calc(100dvh - calc(40px + max(6px, env(safe-area-inset-top))) - 68px); /* 동적 뷰포트 높이 사용, 헤더 + 네비게이션(56px) + 상하 패딩(12px) 제외 */
+    /* min-height 제거하여 콘텐츠에 따라 높이가 결정되도록 */
     display: flex;
     flex-direction: column;
 }
@@ -150,10 +152,10 @@ header h1 {
 
 .todo-app {
     padding: 20px 16px; /* 패딩 최적화 (30px 15px → 20px 16px) */
-    padding-bottom: 80px; /* 바텀 네비게이션 공간 확보 (100px → 80px) */
+    padding-bottom: 20px; /* 하단 패딩만 유지 (바텀 네비게이션은 페이지 하단에 고정) */
     background: #1e1e1e;
     color: #e0e0e0;
-    flex: 1; /* 남은 공간 채우기 */
+    /* flex: 1 제거하여 콘텐츠에 따라 높이가 결정되도록 */
 }
 
 .input-section {
@@ -230,9 +232,8 @@ header h1 {
 /* 필터 섹션 제거됨 - 서브탭으로 대체됨 */
 
 .todo-list {
-    min-height: 200px;
-    max-height: calc(100vh - 500px); /* 바텀 네비게이션 공간 확보 */
-    overflow-y: auto;
+    /* 스크롤 컨테이너로 분리하지 않고, 전체 페이지 스크롤 사용 */
+    min-height: 0;
 }
 
 .todo-item {
@@ -739,24 +740,7 @@ header h1 {
     overflow: hidden !important;
 }
 
-/* 스크롤바 스타일링 */
-.todo-list::-webkit-scrollbar {
-    width: 8px;
-}
-
-.todo-list::-webkit-scrollbar-track {
-    background: #2a2a2a;
-    border-radius: 10px;
-}
-
-.todo-list::-webkit-scrollbar-thumb {
-    background: #3a3a3a; /* 파란색 제거, 회색으로 변경 */
-    border-radius: 10px;
-}
-
-.todo-list::-webkit-scrollbar-thumb:hover {
-    background: #4a4a4a; /* 파란색 제거, 약간 밝은 회색으로 변경 */
-}
+/* 스크롤바 스타일링 제거 - 전체 페이지 스크롤 사용 */
 
 /* 반응형 디자인 */
 @media (max-width: 600px) {
