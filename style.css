@@ -1,4 +1,3 @@
-/* 전체 스타일 리셋 및 기본 설정 */
 * {
     margin: 0;
     padding: 0;
@@ -9,308 +8,333 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
-    padding: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 20px;
 }
 
 .container {
     width: 100%;
-    max-width: 500px;
+    max-width: 600px;
     background: white;
     border-radius: 20px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-    padding: 30px;
-    animation: fadeIn 0.5s ease-in;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* 헤더 스타일 */
 header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 30px;
     text-align: center;
-    margin-bottom: 30px;
 }
 
 header h1 {
-    color: #667eea;
-    font-size: 2rem;
-    font-weight: 600;
-}
-
-/* API 키 입력 섹션 */
-.api-key-section {
-    margin-bottom: 25px;
-    padding: 20px;
-    background: #f0f4ff;
-    border-radius: 10px;
-}
-
-.api-key-section label {
-    display: block;
-    color: #667eea;
-    font-weight: 600;
+    font-size: 2.5em;
     margin-bottom: 10px;
-    font-size: 0.9rem;
+    font-weight: 700;
 }
 
-.api-key-section .input-group {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 8px;
+.subtitle {
+    font-size: 1em;
+    opacity: 0.9;
+    margin-bottom: 15px;
 }
 
-.api-key-section input {
-    flex: 1;
-    padding: 10px 15px;
-    border: 2px solid #e0e7ff;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    transition: border-color 0.3s;
+/* 메인 네비게이션 스타일 */
+.main-navigation {
+    margin-top: 15px;
 }
 
-.api-key-section input:focus {
-    outline: none;
-    border-color: #667eea;
-}
-
-.api-key-section button {
+.main-navigation .nav-link {
+    display: inline-block;
     padding: 10px 20px;
-    background: #667eea;
+    background: rgba(255, 255, 255, 0.2);
     color: white;
-    border: none;
+    text-decoration: none;
     border-radius: 8px;
-    cursor: pointer;
     font-weight: 600;
-    transition: background 0.3s;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+    backdrop-filter: blur(10px);
 }
 
-.api-key-section button:hover {
-    background: #5568d3;
+.main-navigation .nav-link:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
-.api-key-section small {
-    display: block;
-    color: #6b7280;
-    font-size: 0.75rem;
-    margin-top: 5px;
+.todo-app {
+    padding: 30px;
 }
 
-/* 검색 섹션 */
-.search-section {
+.input-section {
     margin-bottom: 25px;
 }
 
 .input-group {
     display: flex;
     gap: 10px;
-    margin-bottom: 15px;
+    flex-wrap: wrap;
 }
 
-.input-group input {
+#todoInput {
     flex: 1;
-    padding: 12px 15px;
-    border: 2px solid #e0e7ff;
+    min-width: 200px;
+    padding: 15px;
+    border: 2px solid #e0e0e0;
     border-radius: 10px;
-    font-size: 1rem;
-    transition: border-color 0.3s;
+    font-size: 1em;
+    transition: all 0.3s ease;
 }
 
-.input-group input:focus {
+#todoInput:focus {
     outline: none;
     border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
-.input-group button,
-.location-btn {
-    padding: 12px 20px;
-    background: #667eea;
+#todoDate {
+    padding: 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#todoDate:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.btn-add {
+    padding: 15px 30px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     border: none;
     border-radius: 10px;
+    font-size: 1em;
+    font-weight: 600;
     cursor: pointer;
-    font-weight: 600;
-    font-size: 1rem;
-    transition: all 0.3s;
-    white-space: nowrap;
+    transition: all 0.3s ease;
 }
 
-.input-group button:hover,
-.location-btn:hover {
-    background: #5568d3;
+.btn-add:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
 }
 
-.location-btn {
-    width: 100%;
-    background: #764ba2;
+.btn-add:active {
+    transform: translateY(0);
 }
 
-.location-btn:hover {
-    background: #653a8a;
-}
-
-/* 날씨 카드 */
-.weather-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 15px;
-    padding: 30px;
-    color: white;
-    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
-}
-
-.location-info {
-    text-align: center;
-    margin-bottom: 25px;
-}
-
-.location-info h2 {
-    font-size: 1.8rem;
-    margin-bottom: 5px;
-    font-weight: 600;
-}
-
-.location-info p {
-    font-size: 0.95rem;
-    opacity: 0.9;
-}
-
-.main-weather {
-    text-align: center;
-    margin: 30px 0;
-    padding: 20px 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.3);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.temperature {
-    font-size: 4rem;
-    font-weight: 700;
-    margin-bottom: 15px;
-    line-height: 1;
-}
-
-.temperature .unit {
-    font-size: 2rem;
-    vertical-align: super;
-}
-
-.condition {
+.filter-section {
     display: flex;
-    align-items: center;
-    justify-content: center;
     gap: 10px;
-    margin-top: 15px;
+    margin-bottom: 25px;
+    justify-content: center;
 }
 
-.condition img {
-    width: 60px;
-    height: 60px;
-}
-
-.condition p {
-    font-size: 1.2rem;
-    font-weight: 500;
-}
-
-.weather-details {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    margin-top: 25px;
-}
-
-.detail-item {
-    background: rgba(255, 255, 255, 0.2);
-    padding: 15px;
-    border-radius: 10px;
-    text-align: center;
-    backdrop-filter: blur(10px);
-}
-
-.detail-item .label {
-    display: block;
-    font-size: 0.85rem;
-    opacity: 0.9;
-    margin-bottom: 8px;
-}
-
-.detail-item .value {
-    display: block;
-    font-size: 1.3rem;
+.filter-btn {
+    padding: 10px 20px;
+    border: 2px solid #e0e0e0;
+    background: white;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9em;
     font-weight: 600;
+    transition: all 0.3s ease;
+    color: #666;
 }
 
-/* 에러 메시지 */
-.error-message {
-    background: #fee;
-    color: #c33;
-    padding: 15px;
-    border-radius: 10px;
-    margin-top: 20px;
-    border-left: 4px solid #c33;
-    text-align: center;
-    font-weight: 500;
-}
-
-/* 로딩 표시 */
-.loading {
-    text-align: center;
-    padding: 40px;
+.filter-btn:hover {
+    border-color: #667eea;
     color: #667eea;
 }
 
-.spinner {
-    border: 4px solid #e0e7ff;
-    border-top: 4px solid #667eea;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    animation: spin 1s linear infinite;
-    margin: 0 auto 20px;
+.filter-btn.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-color: transparent;
 }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+.todo-list {
+    min-height: 200px;
+    max-height: 400px;
+    overflow-y: auto;
 }
 
-.loading p {
+.todo-item {
+    background: #f8f9fa;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: all 0.3s ease;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.todo-item:hover {
+    background: #e9ecef;
+    transform: translateX(5px);
+}
+
+.todo-item.completed {
+    opacity: 0.6;
+}
+
+.todo-item.completed .todo-text {
+    text-decoration: line-through;
+    color: #999;
+}
+
+.todo-checkbox {
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+    accent-color: #667eea;
+}
+
+.todo-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.todo-text {
+    font-size: 1em;
+    color: #333;
+    word-break: break-word;
+}
+
+.todo-date {
+    font-size: 0.85em;
+    color: #999;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.todo-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-edit,
+.btn-delete {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9em;
     font-weight: 600;
-    font-size: 1.1rem;
+    transition: all 0.3s ease;
+}
+
+.btn-edit {
+    background: #ffc107;
+    color: white;
+}
+
+.btn-edit:hover {
+    background: #ffb300;
+    transform: scale(1.05);
+}
+
+.btn-delete {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-delete:hover {
+    background: #c82333;
+    transform: scale(1.05);
+}
+
+.stats-section {
+    margin-top: 25px;
+    padding-top: 25px;
+    border-top: 2px solid #e0e0e0;
+    display: flex;
+    justify-content: space-around;
+    font-size: 0.9em;
+    color: #666;
+    font-weight: 600;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #999;
+}
+
+.empty-state svg {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 20px;
+    opacity: 0.3;
+}
+
+.empty-state p {
+    font-size: 1.2em;
+}
+
+/* 스크롤바 스타일링 */
+.todo-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.todo-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.todo-list::-webkit-scrollbar-thumb {
+    background: #667eea;
+    border-radius: 10px;
+}
+
+.todo-list::-webkit-scrollbar-thumb:hover {
+    background: #764ba2;
 }
 
 /* 반응형 디자인 */
 @media (max-width: 600px) {
-    .container {
-        padding: 20px;
-    }
-
-    .temperature {
-        font-size: 3rem;
-    }
-
-    .weather-details {
-        grid-template-columns: 1fr;
+    header h1 {
+        font-size: 2em;
     }
 
     .input-group {
         flex-direction: column;
     }
 
-    .input-group button {
+    #todoInput,
+    #todoDate,
+    .btn-add {
         width: 100%;
     }
-}
 
+    .stats-section {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+}

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>오늘 날씨</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 네비게이션 -->
+        <nav class="navigation">
+            <a href="../index.html" class="nav-link">← 할 일 관리</a>
+        </nav>
+
+        <!-- 헤더: 앱 제목 -->
+        <header>
+            <h1>🌤️ 오늘 날씨</h1>
+        </header>
+
+        <!-- API 키 입력 섹션 -->
+        <section class="api-key-section">
+            <label for="apiKey">WeatherAPI.com API 키:</label>
+            <div class="input-group">
+                <input type="password" id="apiKey" placeholder="API 키를 입력하세요">
+                <button id="saveApiKey">저장</button>
+            </div>
+            <small class="hint">API 키는 브라우저에 저장됩니다 (무료 회원가입: https://www.weatherapi.com)</small>
+        </section>
+
+        <!-- 검색 섹션 -->
+        <section class="search-section">
+            <div class="input-group">
+                <input type="text" id="cityInput" placeholder="도시명을 입력하세요 (예: Seoul, 서울)">
+                <button id="searchBtn">검색</button>
+            </div>
+            <button id="getLocationBtn" class="location-btn">📍 현재 위치 사용</button>
+        </section>
+
+        <!-- 날씨 정보 표시 영역 -->
+        <section class="weather-section" id="weatherSection" style="display: none;">
+            <div class="weather-card">
+                <div class="location-info">
+                    <h2 id="cityName">-</h2>
+                    <p id="currentDate">-</p>
+                </div>
+                
+                <div class="main-weather">
+                    <div class="temperature">
+                        <span id="temp">-</span>
+                        <span class="unit">°C</span>
+                    </div>
+                    <div class="condition">
+                        <img id="weatherIcon" src="" alt="날씨 아이콘">
+                        <p id="weatherCondition">-</p>
+                    </div>
+                </div>
+
+                <div class="weather-details">
+                    <div class="detail-item">
+                        <span class="label">체감온도</span>
+                        <span class="value" id="feelsLike">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">습도</span>
+                        <span class="value" id="humidity">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">풍속</span>
+                        <span class="value" id="windSpeed">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">기압</span>
+                        <span class="value" id="pressure">-</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 에러 메시지 영역 -->
+        <div class="error-message" id="errorMessage" style="display: none;"></div>
+
+        <!-- 로딩 표시 -->
+        <div class="loading" id="loading" style="display: none;">
+            <div class="spinner"></div>
+            <p>날씨 정보를 불러오는 중...</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
