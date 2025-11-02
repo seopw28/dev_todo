@@ -1,0 +1,47 @@
+{
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+  "terminal.integrated.profiles.windows": {
+    "PowerShell": {
+      "source": "PowerShell",
+      "args": ["-NoExit", "-Command", "chcp 65001 | Out-Null; [Console]::OutputEncoding = [System.Text.Encoding]::UTF8"]
+    }
+  },
+  "terminal.integrated.fontFamily": "Consolas, 'D2Coding', 'Malgun Gothic', monospace",
+  "files.encoding": "utf8",
+  "editor.tokenColorCustomizations": {
+    "textMateRules": [
+      {
+        "scope": [
+          "comment.line.number-sign.shell",
+          "comment.line.number-sign.bash",
+          "comment.line.bash",
+          "comment.line.shell",
+          "punctuation.definition.comment.bash",
+          "punctuation.definition.comment.shell"
+        ],
+        "settings": {
+          "foreground": "#4A754A"
+        }
+      }
+    ]
+  },
+  "[markdown]": {
+    "editor.tokenColorCustomizations": {
+      "textMateRules": [
+        {
+          "scope": [
+            "comment.line.number-sign.shell",
+            "comment.line.number-sign.bash",
+            "comment.line.bash",
+            "comment.line.shell",
+            "punctuation.definition.comment.bash"
+          ],
+          "settings": {
+            "foreground": "#4A754A"
+          }
+        }
+      ]
+    }
+  }
+}
+
