@@ -1,12 +1,27 @@
 // DOM 요소 참조
-const apiKeyInput = document.getElementById('apiKey');
-const saveApiKeyBtn = document.getElementById('saveApiKey');
 const cityInput = document.getElementById('cityInput');
 const searchBtn = document.getElementById('searchBtn');
 const getLocationBtn = document.getElementById('getLocationBtn');
 const weatherSection = document.getElementById('weatherSection');
 const errorMessage = document.getElementById('errorMessage');
 const loading = document.getElementById('loading');
+const statusTime = document.querySelector('.status-time');
+
+// 상태바 시간 업데이트
+function updateStatusTime() {
+    if (statusTime) {
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        statusTime.textContent = `${hours}:${minutes}`;
+    }
+}
+
+// 상태바 시간 주기적 업데이트
+if (statusTime) {
+    updateStatusTime();
+    setInterval(updateStatusTime, 1000);
+}
 
 // 날씨 정보 표시 요소들
 const cityName = document.getElementById('cityName');
@@ -19,34 +34,118 @@ const humidity = document.getElementById('humidity');
 const windSpeed = document.getElementById('windSpeed');
 const pressure = document.getElementById('pressure');
 
-// 기본 API 키
+// 기본 API 키 (사용자에게 보이지 않음)
 const DEFAULT_API_KEY = '42d715326be242e18f224055250211';
 
-// 페이지 로드 시 저장된 API 키 불러오기 또는 기본 키 설정
-window.addEventListener('DOMContentLoaded', () => {
-    let savedApiKey = localStorage.getItem('weatherapi_key');
+// 기본 도시 (서울)
+const DEFAULT_CITY = '서울';
+
+// 한글 도시명을 영어명으로 변환하는 매핑 (WeatherAPI 호환성 향상)
+const CITY_NAME_MAP = {
+    '서울': 'Seoul',
+    '부산': 'Busan',
+    '대구': 'Daegu',
+    '인천': 'Incheon',
+    '광주': 'Gwangju',
+    '대전': 'Daejeon',
+    '울산': 'Ulsan',
+    '수원': 'Suwon',
+    '성남': 'Seongnam',
+    '고양': 'Goyang',
+    '용인': 'Yongin',
+    '부천': 'Bucheon',
+    '안산': 'Ansan',
+    '안양': 'Anyang',
+    '평택': 'Pyeongtaek',
+    '시흥': 'Siheung',
+    '김포': 'Gimpo',
+    '의정부': 'Uijeongbu',
+    '광명': 'Gwangmyeong',
+    '파주': 'Paju',
+    '이천': 'Icheon',
+    '오산': 'Osan',
+    '구리': 'Guri',
+    '안성': 'Anseong',
+    '포천': 'Pocheon',
+    '의왕': 'Uiwang',
+    '하남': 'Hanam',
+    '여주': 'Yeoju'
+};
+
+// 도시명 변환 함수 (한글이면 영어로 변환, 이미 영어거나 숫자면 그대로 사용)
+function normalizeCityName(cityName) {
+    const trimmed = cityName.trim();
     
-    // 저장된 키가 없으면 기본 키 사용
+    // 한글 도시명 매핑에 있으면 영어명으로 변환
+    if (CITY_NAME_MAP[trimmed]) {
+        return CITY_NAME_MAP[trimmed];
+    }
+    
+    // 위도,경도 형식이면 그대로 반환
+    if (/^-?\d+\.?\d*,-?\d+\.?\d*$/.test(trimmed)) {
+        return trimmed;
+    }
+    
+    // 이미 영어명이거나 다른 형식이면 그대로 반환
+    return trimmed;
+}
+
+// 현재 위치 가져오기 함수 (재사용 가능하도록 분리)
+function getCurrentLocation() {
+    if (!navigator.geolocation) {
+        // 위치 정보를 지원하지 않는 경우 서울로 대체
+        showError('브라우저가 위치 정보를 지원하지 않습니다. 서울 날씨를 표시합니다.');
+        fetchWeather(normalizeCityName(DEFAULT_CITY));
+        return;
+    }
+
+    setLoading(true);
+
+    // 현재 위치 가져오기
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            const { latitude, longitude } = position.coords;
+            // 위도, 경도를 문자열로 변환하여 API에 전달
+            fetchWeather(`${latitude},${longitude}`);
+        },
+        (error) => {
+            setLoading(false);
+            console.error('위치 정보 가져오기 오류:', error);
+            let errorMsg = '위치 정보를 가져올 수 없습니다. 서울 날씨를 표시합니다.';
+            
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    errorMsg = '위치 정보 접근이 거부되었습니다. 서울 날씨를 표시합니다.';
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    errorMsg = '위치 정보를 사용할 수 없습니다. 서울 날씨를 표시합니다.';
+                    break;
+                case error.TIMEOUT:
+                    errorMsg = '위치 정보 요청 시간이 초과되었습니다. 서울 날씨를 표시합니다.';
+                    break;
+            }
+            showError(errorMsg);
+            // 에러 발생 시 서울 날씨를 대체로 표시
+            fetchWeather(normalizeCityName(DEFAULT_CITY));
+        },
+        {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0
+        }
+    );
+}
+
+// 페이지 로드 시 현재 위치 기반 날씨 자동 로드
+window.addEventListener('DOMContentLoaded', () => {
+    // 기본 API 키를 localStorage에 설정 (없을 경우에만)
+    let savedApiKey = localStorage.getItem('weatherapi_key');
     if (!savedApiKey) {
-        savedApiKey = DEFAULT_API_KEY;
         localStorage.setItem('weatherapi_key', DEFAULT_API_KEY);
     }
     
-    apiKeyInput.value = savedApiKey;
-    // API 키가 있으면 입력 필드 숨기기 (선택사항)
-    // apiKeyInput.parentElement.parentElement.style.display = 'none';
-});
-
-// API 키 저장 버튼 클릭 이벤트
-saveApiKeyBtn.addEventListener('click', () => {
-    const apiKey = apiKeyInput.value.trim();
-    if (apiKey) {
-        localStorage.setItem('weatherapi_key', apiKey);
-        alert('API 키가 저장되었습니다.');
-        apiKeyInput.value = ''; // 보안을 위해 입력 필드 비우기
-    } else {
-        alert('API 키를 입력해주세요.');
-    }
+    // 페이지 로드 시 현재 위치 기반 날씨 자동 로드
+    getCurrentLocation();
 });
 
 // 에러 메시지 표시 함수
@@ -68,19 +167,15 @@ function setLoading(isLoading) {
 
 // 날씨 정보 가져오기 함수
 async function fetchWeather(query) {
-    let apiKey = localStorage.getItem('weatherapi_key');
-    
-    // API 키가 없으면 기본 키 사용
-    if (!apiKey) {
-        apiKey = DEFAULT_API_KEY;
-        localStorage.setItem('weatherapi_key', DEFAULT_API_KEY);
-    }
+    // 항상 기본 API 키 사용 (사용자에게 노출하지 않음)
+    const apiKey = DEFAULT_API_KEY;
 
     setLoading(true);
 
     try {
         // WeatherAPI.com API 호출 (현재 날씨)
         const url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${encodeURIComponent(query)}&lang=ko`;
+        console.log('날씨 정보 요청:', query);
         const response = await fetch(url);
 
         if (!response.ok) {
@@ -89,6 +184,9 @@ async function fetchWeather(query) {
         }
 
         const data = await response.json();
+        console.log('날씨 정보 응답:', data.location.name, '요청:', query);
+        
+        // 응답받은 도시 정보 표시
         displayWeather(data);
     } catch (error) {
         console.error('날씨 정보 가져오기 오류:', error);
@@ -135,62 +233,34 @@ function displayWeather(data) {
     weatherSection.style.display = 'block';
 }
 
-// 도시 검색 버튼 클릭 이벤트
-searchBtn.addEventListener('click', () => {
+// 도시 검색 함수 (재사용 가능하도록 분리)
+function searchCity() {
     const city = cityInput.value.trim();
     if (city) {
-        fetchWeather(city);
+        // 한글 도시명을 영어명으로 변환하여 검색 정확도 향상
+        const normalizedCity = normalizeCityName(city);
+        console.log('검색 중:', city, '->', normalizedCity);
+        fetchWeather(normalizedCity);
     } else {
         showError('도시명을 입력해주세요.');
     }
+}
+
+// 도시 검색 버튼 클릭 이벤트
+searchBtn.addEventListener('click', () => {
+    searchCity();
 });
 
 // Enter 키로 검색
 cityInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
-        searchBtn.click();
+        e.preventDefault(); // 기본 동작 방지
+        searchCity();
     }
 });
 
 // 현재 위치 사용 버튼 클릭 이벤트
 getLocationBtn.addEventListener('click', () => {
-    if (!navigator.geolocation) {
-        showError('브라우저가 위치 정보를 지원하지 않습니다.');
-        return;
-    }
-
-    setLoading(true);
-
-    // 현재 위치 가져오기
-    navigator.geolocation.getCurrentPosition(
-        (position) => {
-            const { latitude, longitude } = position.coords;
-            // 위도, 경도를 문자열로 변환하여 API에 전달
-            fetchWeather(`${latitude},${longitude}`);
-        },
-        (error) => {
-            setLoading(false);
-            console.error('위치 정보 가져오기 오류:', error);
-            let errorMsg = '위치 정보를 가져올 수 없습니다.';
-            
-            switch(error.code) {
-                case error.PERMISSION_DENIED:
-                    errorMsg = '위치 정보 접근이 거부되었습니다. 브라우저 설정에서 위치 권한을 허용해주세요.';
-                    break;
-                case error.POSITION_UNAVAILABLE:
-                    errorMsg = '위치 정보를 사용할 수 없습니다.';
-                    break;
-                case error.TIMEOUT:
-                    errorMsg = '위치 정보 요청 시간이 초과되었습니다.';
-                    break;
-            }
-            showError(errorMsg);
-        },
-        {
-            enableHighAccuracy: true,
-            timeout: 10000,
-            maximumAge: 0
-        }
-    );
+    getCurrentLocation();
 });
 

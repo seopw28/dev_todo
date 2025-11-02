@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To Do 상세</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .detail-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            min-height: calc(100vh - 100px);
+            padding-bottom: 120px;
+        }
+
+        .detail-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .back-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            border: none;
+            background: transparent;
+            color: #e0e0e0;
+            font-size: 1.5em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .detail-title {
+            flex: 1;
+            font-size: 2em;
+            font-weight: 700;
+            color: #e0e0e0;
+            border: none;
+            background: transparent;
+            padding: 10px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .detail-title:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.3);
+        }
+
+        .detail-description {
+            width: 100%;
+            min-height: 400px;
+            padding: 20px;
+            border: none;
+            border-radius: 12px;
+            background: #1e1e1e;
+            color: #e0e0e0;
+            font-size: 1em;
+            line-height: 1.6;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            resize: vertical;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .detail-description::placeholder {
+            color: #666;
+        }
+
+        .detail-description:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.3);
+        }
+
+        .detail-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+            justify-content: flex-end;
+        }
+
+        .btn-save {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #4a90e2 0%, #3a7bc8 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(74, 144, 226, 0.4);
+        }
+
+        .todo-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #1e1e1e;
+            border-radius: 8px;
+        }
+
+        .status-checkbox {
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+            accent-color: #4a90e2;
+        }
+
+        .status-label {
+            color: #aaa;
+            font-size: 0.95em;
+        }
+    </style>
+</head>
+<body>
+    <div class="detail-container">
+        <div class="detail-header">
+            <button class="back-button" onclick="goBack()">←</button>
+            <input type="text" id="detailTitle" class="detail-title" placeholder="제목 없음">
+        </div>
+
+        <div class="todo-status">
+            <input type="checkbox" id="detailCompleted" class="status-checkbox">
+            <label for="detailCompleted" class="status-label">완료됨</label>
+        </div>
+
+        <textarea 
+            id="detailDescription" 
+            class="detail-description" 
+            placeholder="여기에 세부내역을 작성하세요...&#10;&#10;노션처럼 자유롭게 메모를 작성할 수 있습니다."
+        ></textarea>
+
+        <div class="detail-actions">
+            <button class="btn-save" onclick="saveDetail()">저장</button>
+        </div>
+    </div>
+
+    <!-- 바텀 네비게이션 -->
+    <nav class="bottom-navigation">
+        <a href="index.html" class="nav-item">
+            <span class="nav-icon">📝</span>
+            <span class="nav-label">To Do</span>
+        </a>
+        <a href="weather/index.html" class="nav-item">
+            <span class="nav-icon">🌤️</span>
+            <span class="nav-label">날씨</span>
+        </a>
+    </nav>
+
+    <script>
+        // URL에서 todo ID 가져오기
+        const urlParams = new URLSearchParams(window.location.search);
+        const todoId = parseInt(urlParams.get('id'));
+
+        if (!todoId) {
+            alert('잘못된 접근입니다.');
+            window.location.href = 'index.html';
+        }
+
+        // localStorage에서 todos 가져오기
+        let todos = JSON.parse(localStorage.getItem('todos')) || [];
+        let currentTodo = todos.find(t => t.id === todoId);
+
+        if (!currentTodo) {
+            alert('To Do를 찾을 수 없습니다.');
+            window.location.href = 'index.html';
+        }
+
+        // 초기값 설정
+        document.getElementById('detailTitle').value = currentTodo.text || '';
+        document.getElementById('detailCompleted').checked = currentTodo.completed || false;
+        document.getElementById('detailDescription').value = currentTodo.description || '';
+
+        // 뒤로가기
+        function goBack() {
+            window.location.href = 'index.html';
+        }
+
+        // 저장
+        function saveDetail() {
+            const title = document.getElementById('detailTitle').value.trim();
+            const description = document.getElementById('detailDescription').value;
+            const completed = document.getElementById('detailCompleted').checked;
+
+            if (title === '') {
+                alert('제목을 입력해주세요.');
+                return;
+            }
+
+            // todos 업데이트
+            todos = todos.map(t => {
+                if (t.id === todoId) {
+                    return {
+                        ...t,
+                        text: title,
+                        description: description,
+                        completed: completed,
+                        updatedAt: new Date().toISOString()
+                    };
+                }
+                return t;
+            });
+
+            localStorage.setItem('todos', JSON.stringify(todos));
+            alert('저장되었습니다.');
+            goBack();
+        }
+
+        // 자동 저장 (입력 후 2초 뒤)
+        let saveTimeout;
+        function autoSave() {
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => {
+                const title = document.getElementById('detailTitle').value.trim();
+                const description = document.getElementById('detailDescription').value;
+                const completed = document.getElementById('detailCompleted').checked;
+
+                if (title !== '') {
+                    todos = todos.map(t => {
+                        if (t.id === todoId) {
+                            return {
+                                ...t,
+                                text: title,
+                                description: description,
+                                completed: completed,
+                                updatedAt: new Date().toISOString()
+                            };
+                        }
+                        return t;
+                    });
+                    localStorage.setItem('todos', JSON.stringify(todos));
+                }
+            }, 2000);
+        }
+
+        document.getElementById('detailTitle').addEventListener('input', autoSave);
+        document.getElementById('detailDescription').addEventListener('input', autoSave);
+        document.getElementById('detailCompleted').addEventListener('change', autoSave);
+    </script>
+</body>
+</html>
+

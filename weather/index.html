@@ -2,40 +2,48 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#667eea">
     <title>오늘 날씨</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <!-- 네비게이션 -->
-        <nav class="navigation">
-            <a href="../index.html" class="nav-link">← 할 일 관리</a>
-        </nav>
+    <!-- 상태바 시뮬레이션 -->
+    <div class="status-bar">
+        <div class="status-left">
+            <span class="status-time">12:34</span>
+        </div>
+        <div class="status-right">
+            <span class="status-battery">🔋</span>
+            <span class="status-signal">📶</span>
+        </div>
+    </div>
 
-        <!-- 헤더: 앱 제목 -->
-        <header>
-            <h1>🌤️ 오늘 날씨</h1>
+    <div class="app-container">
+        <!-- 앱 헤더 -->
+        <header class="app-header">
+            <a href="../index.html" class="back-button">
+                <span class="back-icon">←</span>
+            </a>
+            <h1 class="app-title">오늘 날씨</h1>
+            <div class="header-spacer"></div>
         </header>
 
-        <!-- API 키 입력 섹션 -->
-        <section class="api-key-section">
-            <label for="apiKey">WeatherAPI.com API 키:</label>
-            <div class="input-group">
-                <input type="password" id="apiKey" placeholder="API 키를 입력하세요">
-                <button id="saveApiKey">저장</button>
-            </div>
-            <small class="hint">API 키는 브라우저에 저장됩니다 (무료 회원가입: https://www.weatherapi.com)</small>
-        </section>
-
-        <!-- 검색 섹션 -->
-        <section class="search-section">
-            <div class="input-group">
-                <input type="text" id="cityInput" placeholder="도시명을 입력하세요 (예: Seoul, 서울)">
-                <button id="searchBtn">검색</button>
-            </div>
-            <button id="getLocationBtn" class="location-btn">📍 현재 위치 사용</button>
-        </section>
+        <!-- 메인 콘텐츠 -->
+        <main class="main-content">
+            <!-- 검색 섹션 -->
+            <section class="search-section">
+                <div class="input-group">
+                    <input type="text" id="cityInput" placeholder="도시명 검색">
+                    <button id="searchBtn" class="search-button">🔍</button>
+                </div>
+                <button id="getLocationBtn" class="location-btn">
+                    <span class="btn-icon">📍</span>
+                    <span>현재 위치</span>
+                </button>
+            </section>
 
         <!-- 날씨 정보 표시 영역 -->
         <section class="weather-section" id="weatherSection" style="display: none;">
@@ -85,7 +93,20 @@
             <div class="spinner"></div>
             <p>날씨 정보를 불러오는 중...</p>
         </div>
+        </main>
     </div>
+
+    <!-- 바텀 네비게이션 -->
+    <nav class="bottom-navigation">
+        <a href="../index.html" class="nav-item">
+            <span class="nav-icon">📝</span>
+            <span class="nav-label">To Do</span>
+        </a>
+        <a href="index.html" class="nav-item active">
+            <span class="nav-icon">🌤️</span>
+            <span class="nav-label">날씨</span>
+        </a>
+    </nav>
 
     <script src="script.js"></script>
 </body>

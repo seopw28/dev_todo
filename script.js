@@ -1,26 +1,19 @@
-// 할 일 데이터 관리
+// To Do 데이터 관리
 let todos = JSON.parse(localStorage.getItem('todos')) || [];
 let currentFilter = 'all';
 
 // DOM 요소 가져오기
 const todoInput = document.getElementById('todoInput');
-const todoDate = document.getElementById('todoDate');
 const addBtn = document.getElementById('addBtn');
 const todoList = document.getElementById('todoList');
-const filterBtns = document.querySelectorAll('.filter-btn');
-const todoCount = document.getElementById('todoCount');
-const activeCount = document.getElementById('activeCount');
-const completedCount = document.getElementById('completedCount');
-
-// 오늘 날짜를 기본값으로 설정
-const today = new Date().toISOString().split('T')[0];
-todoDate.value = today;
+const filterBtns = document.querySelectorAll('.sub-tab');
+// 통계 요소는 제거됨 (바텀 네비게이션 사용)
 
 // 초기 렌더링
 renderTodos();
 updateStats();
 
-// 할 일 추가
+// To Do 추가
 addBtn.addEventListener('click', addTodo);
 todoInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
@@ -30,17 +23,15 @@ todoInput.addEventListener('keypress', (e) => {
 
 function addTodo() {
     const text = todoInput.value.trim();
-    const date = todoDate.value;
 
     if (text === '') {
-        alert('할 일을 입력해주세요!');
+        alert('To Do를 입력해주세요!');
         return;
     }
 
     const todo = {
         id: Date.now(),
         text: text,
-        date: date,
         completed: false,
         createdAt: new Date().toISOString()
     };
@@ -52,11 +43,10 @@ function addTodo() {
 
     // 입력 필드 초기화
     todoInput.value = '';
-    todoDate.value = today;
     todoInput.focus();
 }
 
-// 할 일 삭제
+// To Do 삭제
 function deleteTodo(id) {
     todos = todos.filter(todo => todo.id !== id);
     saveTodos();
@@ -64,7 +54,7 @@ function deleteTodo(id) {
     updateStats();
 }
 
-// 할 일 완료 토글
+// To Do 완료 토글
 function toggleTodo(id) {
     todos = todos.map(todo => {
         if (todo.id === id) {
@@ -77,20 +67,17 @@ function toggleTodo(id) {
     updateStats();
 }
 
-// 할 일 수정
+// To Do 수정
 function editTodo(id) {
     const todo = todos.find(t => t.id === id);
     if (!todo) return;
 
-    const newText = prompt('할 일을 수정하세요:', todo.text);
+    const newText = prompt('To Do를 수정하세요:', todo.text);
     if (newText === null || newText.trim() === '') return;
-
-    const newDate = prompt('날짜를 수정하세요 (YYYY-MM-DD):', todo.date);
-    if (newDate === null) return;
 
     todos = todos.map(t => {
         if (t.id === id) {
-            return { ...t, text: newText.trim(), date: newDate };
+            return { ...t, text: newText.trim() };
         }
         return t;
     });
@@ -109,7 +96,7 @@ filterBtns.forEach(btn => {
     });
 });
 
-// 할 일 렌더링
+// To Do 렌더링
 function renderTodos() {
     const filteredTodos = getFilteredTodos();
     
@@ -132,25 +119,29 @@ function renderTodos() {
                 type="checkbox" 
                 class="todo-checkbox" 
                 ${todo.completed ? 'checked' : ''} 
-                onchange="toggleTodo(${todo.id})"
+                onchange="toggleTodo(${todo.id}); event.stopPropagation();"
+                onclick="event.stopPropagation();"
             />
-            <div class="todo-content">
+            <div class="todo-content" onclick="openDetail(${todo.id})" style="cursor: pointer; flex: 1;">
                 <span class="todo-text">${escapeHtml(todo.text)}</span>
-                <span class="todo-date">
-                    📅 ${formatDate(todo.date)}
-                    ${isToday(todo.date) ? '<span style="color: #667eea; font-weight: bold;">(오늘)</span>' : ''}
-                    ${isOverdue(todo.date) && !todo.completed ? '<span style="color: #dc3545; font-weight: bold;">(지난 날짜)</span>' : ''}
-                </span>
             </div>
-            <div class="todo-actions">
-                <button class="btn-edit" onclick="editTodo(${todo.id})">수정</button>
-                <button class="btn-delete" onclick="deleteTodo(${todo.id})">삭제</button>
+            <div class="todo-actions" onclick="event.stopPropagation();">
+                <button class="btn-edit" onclick="editTodo(${todo.id}); event.stopPropagation();" title="수정">✎</button>
+                <button class="btn-delete" onclick="deleteTodo(${todo.id}); event.stopPropagation();" title="삭제">🗑</button>
             </div>
         </div>
     `).join('');
 }
 
-// 필터링된 할 일 가져오기
+// 상세 페이지 열기
+function openDetail(id) {
+    window.location.href = `todo-detail.html?id=${id}`;
+}
+
+// 전역 함수로 등록
+window.openDetail = openDetail;
+
+// 필터링된 To Do 가져오기
 function getFilteredTodos() {
     switch (currentFilter) {
         case 'active':
@@ -166,23 +157,22 @@ function getFilteredTodos() {
 function getEmptyMessage() {
     switch (currentFilter) {
         case 'active':
-            return '활성화된 할 일이 없습니다.';
+            return '활성화된 To Do가 없습니다.';
         case 'completed':
-            return '완료된 할 일이 없습니다.';
+            return '완료된 To Do가 없습니다.';
         default:
-            return '할 일을 추가해보세요!';
+            return 'To Do를 추가해보세요!';
     }
 }
 
-// 통계 업데이트
+// 통계 업데이트 함수 (통계 섹션 제거로 인해 비활성화)
 function updateStats() {
-    const total = todos.length;
-    const active = todos.filter(todo => !todo.completed).length;
-    const completed = todos.filter(todo => todo.completed).length;
-
-    todoCount.textContent = `전체: ${total}`;
-    activeCount.textContent = `활성: ${active}`;
-    completedCount.textContent = `완료: ${completed}`;
+    // 통계 섹션이 제거되어 더 이상 업데이트하지 않음
+    // 필요시 콘솔에만 출력하거나 다른 용도로 사용 가능
+    // const total = todos.length;
+    // const active = todos.filter(todo => !todo.completed).length;
+    // const completed = todos.filter(todo => todo.completed).length;
+    // console.log('Stats:', { total, active, completed });
 }
 
 // 날짜 포맷팅

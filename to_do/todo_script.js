@@ -1,4 +1,4 @@
-// 할 일 데이터 관리
+// To Do 데이터 관리
 let todos = JSON.parse(localStorage.getItem('todos')) || [];
 let currentFilter = 'all';
 
@@ -20,7 +20,7 @@ todoDate.value = today;
 renderTodos();
 updateStats();
 
-// 할 일 추가
+// To Do 추가
 addBtn.addEventListener('click', addTodo);
 todoInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
@@ -33,7 +33,7 @@ function addTodo() {
     const date = todoDate.value;
 
     if (text === '') {
-        alert('할 일을 입력해주세요!');
+        alert('To Do를 입력해주세요!');
         return;
     }
 
@@ -56,7 +56,7 @@ function addTodo() {
     todoInput.focus();
 }
 
-// 할 일 삭제
+// To Do 삭제
 function deleteTodo(id) {
     todos = todos.filter(todo => todo.id !== id);
     saveTodos();
@@ -64,7 +64,7 @@ function deleteTodo(id) {
     updateStats();
 }
 
-// 할 일 완료 토글
+// To Do 완료 토글
 function toggleTodo(id) {
     todos = todos.map(todo => {
         if (todo.id === id) {
@@ -77,12 +77,12 @@ function toggleTodo(id) {
     updateStats();
 }
 
-// 할 일 수정
+// To Do 수정
 function editTodo(id) {
     const todo = todos.find(t => t.id === id);
     if (!todo) return;
 
-    const newText = prompt('할 일을 수정하세요:', todo.text);
+    const newText = prompt('To Do를 수정하세요:', todo.text);
     if (newText === null || newText.trim() === '') return;
 
     const newDate = prompt('날짜를 수정하세요 (YYYY-MM-DD):', todo.date);
@@ -109,7 +109,7 @@ filterBtns.forEach(btn => {
     });
 });
 
-// 할 일 렌더링
+// To Do 렌더링
 function renderTodos() {
     const filteredTodos = getFilteredTodos();
     
@@ -150,7 +150,7 @@ function renderTodos() {
     `).join('');
 }
 
-// 필터링된 할 일 가져오기
+// 필터링된 To Do 가져오기
 function getFilteredTodos() {
     switch (currentFilter) {
         case 'active':
@@ -166,11 +166,11 @@ function getFilteredTodos() {
 function getEmptyMessage() {
     switch (currentFilter) {
         case 'active':
-            return '활성화된 할 일이 없습니다.';
+            return '활성화된 To Do가 없습니다.';
         case 'completed':
-            return '완료된 할 일이 없습니다.';
+            return '완료된 To Do가 없습니다.';
         default:
-            return '할 일을 추가해보세요!';
+            return 'To Do를 추가해보세요!';
     }
 }
 

@@ -5,25 +5,23 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Attach to Chrome",
-            "port": 9222,
-            "request": "attach",
-            "type": "chrome",
-            "webRoot": "${workspaceFolder}"
-        },
-
-        {
-            "name": "Launch Chrome",
-            "request": "launch",
-            "type": "chrome",
-            "url": "http://localhost:8080",
-            "webRoot": "${workspaceFolder}"
-        },
-        {
+            "name": "웹앱 실행 (로컬 서버)",
             "type": "chrome",
             "request": "launch",
-            "name": "Launch Chrome against localhost",
-            "url": "http://localhost:8080",
+            "url": "http://localhost:8000",
+            "webRoot": "${workspaceFolder}",
+            "preLaunchTask": "웹 서버 시작",
+            "serverReadyAction": {
+                "pattern": "Serving HTTP on",
+                "uriFormat": "http://localhost:8000",
+                "action": "openExternally"
+            }
+        },
+        {
+            "name": "파일 직접 열기",
+            "type": "chrome",
+            "request": "launch",
+            "file": "${workspaceFolder}/index.html",
             "webRoot": "${workspaceFolder}"
         }
     ]

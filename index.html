@@ -4,47 +4,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>할 일 관리</title>
+    <title>To Do</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>📝 할 일 관리</h1>
+            <h1>📝 To Do</h1>
             <p class="subtitle">오늘의 일정을 체계적으로 관리하세요</p>
-            <!-- 네비게이션: 날씨 페이지로 이동 -->
-            <nav class="main-navigation">
-                <a href="weather/index.html" class="nav-link">🌤️ 날씨 보기</a>
-            </nav>
         </header>
+
+        <!-- 서브탭 네비게이션 -->
+        <nav class="sub-tabs">
+            <button class="sub-tab active" data-filter="all">전체</button>
+            <button class="sub-tab" data-filter="active">활성</button>
+            <button class="sub-tab" data-filter="completed">완료</button>
+        </nav>
 
         <div class="todo-app">
             <div class="input-section">
                 <div class="input-group">
-                    <input type="text" id="todoInput" placeholder="할 일을 입력하세요..." />
-                    <input type="date" id="todoDate" />
-                    <button id="addBtn" class="btn-add">추가</button>
+                    <input type="text" id="todoInput" placeholder="To Do를 입력하세요..." />
+                    <button id="addBtn" class="btn-add">+</button>
                 </div>
                 
             </div>
 
-            <div class="filter-section">
-                <button class="filter-btn active" data-filter="all">전체</button>
-                <button class="filter-btn" data-filter="active">활성</button>
-                <button class="filter-btn" data-filter="completed">완료</button>
-            </div>
-
             <div class="todo-list" id="todoList">
-                <!-- 할 일 목록이 여기에 동적으로 추가됩니다 -->
-            </div>
-
-            <div class="stats-section">
-                <span id="todoCount">전체: 0</span>
-                <span id="activeCount">활성: 0</span>
-                <span id="completedCount">완료: 0</span>
+                <!-- To Do 목록이 여기에 동적으로 추가됩니다 -->
             </div>
         </div>
     </div>
+
+    <!-- 바텀 네비게이션 -->
+    <nav class="bottom-navigation">
+        <a href="index.html" class="nav-item active">
+            <span class="nav-icon">📝</span>
+            <span class="nav-label">To Do</span>
+        </a>
+        <a href="weather/index.html" class="nav-item">
+            <span class="nav-icon">🌤️</span>
+            <span class="nav-label">날씨</span>
+        </a>
+    </nav>
 
     <script src="script.js"></script>
 
