@@ -111,8 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderChatHistory(currentCharacter);
     
     // 상태바 시간 업데이트
-    updateStatusTime();
-    setInterval(updateStatusTime, 1000);
+    // 상태바 제거됨
     
     // 채팅 메시지 스크롤을 하단으로
     scrollToBottom();
@@ -222,16 +221,7 @@ function selectCharacter(characterId) {
 
 // 설정 모달 기능 제거됨 - API 키는 사용자에게 노출되지 않음
 
-// 상태바 시간 업데이트
-function updateStatusTime() {
-    const timeElement = document.getElementById('statusTime');
-    if (timeElement) {
-        const now = new Date();
-        const hours = String(now.getHours()).padStart(2, '0');
-        const minutes = String(now.getMinutes()).padStart(2, '0');
-        timeElement.textContent = `${hours}:${minutes}`;
-    }
-}
+// 상태바 제거됨
 
 // 메시지 전송
 async function sendMessage() {

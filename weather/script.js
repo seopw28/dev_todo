@@ -5,23 +5,7 @@ const getLocationBtn = document.getElementById('getLocationBtn');
 const weatherSection = document.getElementById('weatherSection');
 const errorMessage = document.getElementById('errorMessage');
 const loading = document.getElementById('loading');
-const statusTime = document.querySelector('.status-time');
-
-// 상태바 시간 업데이트
-function updateStatusTime() {
-    if (statusTime) {
-        const now = new Date();
-        const hours = String(now.getHours()).padStart(2, '0');
-        const minutes = String(now.getMinutes()).padStart(2, '0');
-        statusTime.textContent = `${hours}:${minutes}`;
-    }
-}
-
-// 상태바 시간 주기적 업데이트
-if (statusTime) {
-    updateStatusTime();
-    setInterval(updateStatusTime, 1000);
-}
+// 상태바 제거됨
 
 // 날씨 정보 표시 요소들
 const cityName = document.getElementById('cityName');
