@@ -1,247 +1,196 @@
-// 할 일 데이터 관리
-let todos = JSON.parse(localStorage.getItem('todos')) || [];
-let currentFilter = 'all';
+// DOM 요소 참조
+const apiKeyInput = document.getElementById('apiKey');
+const saveApiKeyBtn = document.getElementById('saveApiKey');
+const cityInput = document.getElementById('cityInput');
+const searchBtn = document.getElementById('searchBtn');
+const getLocationBtn = document.getElementById('getLocationBtn');
+const weatherSection = document.getElementById('weatherSection');
+const errorMessage = document.getElementById('errorMessage');
+const loading = document.getElementById('loading');
 
-// DOM 요소 가져오기
-const todoInput = document.getElementById('todoInput');
-const todoDate = document.getElementById('todoDate');
-const addBtn = document.getElementById('addBtn');
-const todoList = document.getElementById('todoList');
-const filterBtns = document.querySelectorAll('.filter-btn');
-const todoCount = document.getElementById('todoCount');
-const activeCount = document.getElementById('activeCount');
-const completedCount = document.getElementById('completedCount');
+// 날씨 정보 표시 요소들
+const cityName = document.getElementById('cityName');
+const currentDate = document.getElementById('currentDate');
+const temp = document.getElementById('temp');
+const weatherIcon = document.getElementById('weatherIcon');
+const weatherCondition = document.getElementById('weatherCondition');
+const feelsLike = document.getElementById('feelsLike');
+const humidity = document.getElementById('humidity');
+const windSpeed = document.getElementById('windSpeed');
+const pressure = document.getElementById('pressure');
 
-// 오늘 날짜를 기본값으로 설정
-const today = new Date().toISOString().split('T')[0];
-todoDate.value = today;
+// 기본 API 키
+const DEFAULT_API_KEY = '42d715326be242e18f224055250211';
 
-// 초기 렌더링
-renderTodos();
-updateStats();
-
-// 할 일 추가
-addBtn.addEventListener('click', addTodo);
-todoInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        addTodo();
+// 페이지 로드 시 저장된 API 키 불러오기 또는 기본 키 설정
+window.addEventListener('DOMContentLoaded', () => {
+    let savedApiKey = localStorage.getItem('weatherapi_key');
+    
+    // 저장된 키가 없으면 기본 키 사용
+    if (!savedApiKey) {
+        savedApiKey = DEFAULT_API_KEY;
+        localStorage.setItem('weatherapi_key', DEFAULT_API_KEY);
     }
+    
+    apiKeyInput.value = savedApiKey;
+    // API 키가 있으면 입력 필드 숨기기 (선택사항)
+    // apiKeyInput.parentElement.parentElement.style.display = 'none';
 });
 
-function addTodo() {
-    const text = todoInput.value.trim();
-    const date = todoDate.value;
-
-    if (text === '') {
-        alert('할 일을 입력해주세요!');
-        return;
-    }
-
-    const todo = {
-        id: Date.now(),
-        text: text,
-        date: date,
-        completed: false,
-        createdAt: new Date().toISOString()
-    };
-
-    todos.push(todo);
-    saveTodos();
-    renderTodos();
-    updateStats();
-
-    // 입력 필드 초기화
-    todoInput.value = '';
-    todoDate.value = today;
-    todoInput.focus();
-}
-
-// 할 일 삭제
-function deleteTodo(id) {
-    todos = todos.filter(todo => todo.id !== id);
-    saveTodos();
-    renderTodos();
-    updateStats();
-}
-
-// 할 일 완료 토글
-function toggleTodo(id) {
-    todos = todos.map(todo => {
-        if (todo.id === id) {
-            return { ...todo, completed: !todo.completed };
-        }
-        return todo;
-    });
-    saveTodos();
-    renderTodos();
-    updateStats();
-}
-
-// 할 일 수정
-function editTodo(id) {
-    const todo = todos.find(t => t.id === id);
-    if (!todo) return;
-
-    const newText = prompt('할 일을 수정하세요:', todo.text);
-    if (newText === null || newText.trim() === '') return;
-
-    const newDate = prompt('날짜를 수정하세요 (YYYY-MM-DD):', todo.date);
-    if (newDate === null) return;
-
-    todos = todos.map(t => {
-        if (t.id === id) {
-            return { ...t, text: newText.trim(), date: newDate };
-        }
-        return t;
-    });
-    saveTodos();
-    renderTodos();
-    updateStats();
-}
-
-// 필터링
-filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-        filterBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentFilter = btn.dataset.filter;
-        renderTodos();
-    });
-});
-
-// 할 일 렌더링
-function renderTodos() {
-    const filteredTodos = getFilteredTodos();
-    
-    if (filteredTodos.length === 0) {
-        todoList.innerHTML = `
-            <div class="empty-state">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M9 11l3 3L22 4"></path>
-                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
-                </svg>
-                <p>${getEmptyMessage()}</p>
-            </div>
-        `;
-        return;
-    }
-
-    todoList.innerHTML = filteredTodos.map(todo => `
-        <div class="todo-item ${todo.completed ? 'completed' : ''}">
-            <input 
-                type="checkbox" 
-                class="todo-checkbox" 
-                ${todo.completed ? 'checked' : ''} 
-                onchange="toggleTodo(${todo.id})"
-            />
-            <div class="todo-content">
-                <span class="todo-text">${escapeHtml(todo.text)}</span>
-                <span class="todo-date">
-                    📅 ${formatDate(todo.date)}
-                    ${isToday(todo.date) ? '<span style="color: #667eea; font-weight: bold;">(오늘)</span>' : ''}
-                    ${isOverdue(todo.date) && !todo.completed ? '<span style="color: #dc3545; font-weight: bold;">(지난 날짜)</span>' : ''}
-                </span>
-            </div>
-            <div class="todo-actions">
-                <button class="btn-edit" onclick="editTodo(${todo.id})">수정</button>
-                <button class="btn-delete" onclick="deleteTodo(${todo.id})">삭제</button>
-            </div>
-        </div>
-    `).join('');
-}
-
-// 필터링된 할 일 가져오기
-function getFilteredTodos() {
-    switch (currentFilter) {
-        case 'active':
-            return todos.filter(todo => !todo.completed);
-        case 'completed':
-            return todos.filter(todo => todo.completed);
-        default:
-            return todos;
-    }
-}
-
-// 빈 상태 메시지
-function getEmptyMessage() {
-    switch (currentFilter) {
-        case 'active':
-            return '활성화된 할 일이 없습니다.';
-        case 'completed':
-            return '완료된 할 일이 없습니다.';
-        default:
-            return '할 일을 추가해보세요!';
-    }
-}
-
-// 통계 업데이트
-function updateStats() {
-    const total = todos.length;
-    const active = todos.filter(todo => !todo.completed).length;
-    const completed = todos.filter(todo => todo.completed).length;
-
-    todoCount.textContent = `전체: ${total}`;
-    activeCount.textContent = `활성: ${active}`;
-    completedCount.textContent = `완료: ${completed}`;
-}
-
-// 날짜 포맷팅
-function formatDate(dateString) {
-    const date = new Date(dateString + 'T00:00:00');
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    
-    const diffTime = date - today;
-    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-
-    const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'short' };
-    const formatted = date.toLocaleDateString('ko-KR', options);
-
-    if (diffDays === 0) {
-        return formatted;
-    } else if (diffDays === 1) {
-        return formatted + ' (내일)';
-    } else if (diffDays === -1) {
-        return formatted + ' (어제)';
-    } else if (diffDays > 0) {
-        return formatted + ` (${diffDays}일 후)`;
+// API 키 저장 버튼 클릭 이벤트
+saveApiKeyBtn.addEventListener('click', () => {
+    const apiKey = apiKeyInput.value.trim();
+    if (apiKey) {
+        localStorage.setItem('weatherapi_key', apiKey);
+        alert('API 키가 저장되었습니다.');
+        apiKeyInput.value = ''; // 보안을 위해 입력 필드 비우기
     } else {
-        return formatted + ` (${Math.abs(diffDays)}일 전)`;
+        alert('API 키를 입력해주세요.');
+    }
+});
+
+// 에러 메시지 표시 함수
+function showError(message) {
+    errorMessage.textContent = message;
+    errorMessage.style.display = 'block';
+    weatherSection.style.display = 'none';
+    setTimeout(() => {
+        errorMessage.style.display = 'none';
+    }, 5000);
+}
+
+// 로딩 상태 관리
+function setLoading(isLoading) {
+    loading.style.display = isLoading ? 'block' : 'none';
+    weatherSection.style.display = isLoading ? 'none' : 'block';
+    errorMessage.style.display = 'none';
+}
+
+// 날씨 정보 가져오기 함수
+async function fetchWeather(query) {
+    let apiKey = localStorage.getItem('weatherapi_key');
+    
+    // API 키가 없으면 기본 키 사용
+    if (!apiKey) {
+        apiKey = DEFAULT_API_KEY;
+        localStorage.setItem('weatherapi_key', DEFAULT_API_KEY);
+    }
+
+    setLoading(true);
+
+    try {
+        // WeatherAPI.com API 호출 (현재 날씨)
+        const url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${encodeURIComponent(query)}&lang=ko`;
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error?.message || '날씨 정보를 가져올 수 없습니다.');
+        }
+
+        const data = await response.json();
+        displayWeather(data);
+    } catch (error) {
+        console.error('날씨 정보 가져오기 오류:', error);
+        showError(error.message || '날씨 정보를 가져오는 중 오류가 발생했습니다.');
+    } finally {
+        setLoading(false);
     }
 }
 
-// 오늘인지 확인
-function isToday(dateString) {
-    const date = new Date(dateString + 'T00:00:00');
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    date.setHours(0, 0, 0, 0);
-    return date.getTime() === today.getTime();
+// 날씨 정보 표시 함수
+function displayWeather(data) {
+    // 위치 정보
+    cityName.textContent = data.location.name;
+    
+    // 현재 날짜 및 시간
+    const date = new Date(data.location.localtime);
+    const options = { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric',
+        weekday: 'long',
+        hour: '2-digit',
+        minute: '2-digit'
+    };
+    currentDate.textContent = date.toLocaleDateString('ko-KR', options);
+
+    // 온도 정보
+    temp.textContent = Math.round(data.current.temp_c);
+
+    // 날씨 아이콘
+    weatherIcon.src = data.current.condition.icon;
+    weatherIcon.alt = data.current.condition.text;
+
+    // 날씨 상태
+    weatherCondition.textContent = data.current.condition.text;
+
+    // 상세 정보
+    feelsLike.textContent = `${Math.round(data.current.feelslike_c)}°C`;
+    humidity.textContent = `${data.current.humidity}%`;
+    windSpeed.textContent = `${data.current.wind_kph} km/h`;
+    pressure.textContent = `${data.current.pressure_mb} mb`;
+
+    // 날씨 섹션 표시
+    weatherSection.style.display = 'block';
 }
 
-// 지난 날짜인지 확인
-function isOverdue(dateString) {
-    const date = new Date(dateString + 'T00:00:00');
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    date.setHours(0, 0, 0, 0);
-    return date.getTime() < today.getTime();
-}
+// 도시 검색 버튼 클릭 이벤트
+searchBtn.addEventListener('click', () => {
+    const city = cityInput.value.trim();
+    if (city) {
+        fetchWeather(city);
+    } else {
+        showError('도시명을 입력해주세요.');
+    }
+});
 
-// HTML 이스케이프
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
+// Enter 키로 검색
+cityInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        searchBtn.click();
+    }
+});
 
-// 로컬 스토리지에 저장
-function saveTodos() {
-    localStorage.setItem('todos', JSON.stringify(todos));
-}
+// 현재 위치 사용 버튼 클릭 이벤트
+getLocationBtn.addEventListener('click', () => {
+    if (!navigator.geolocation) {
+        showError('브라우저가 위치 정보를 지원하지 않습니다.');
+        return;
+    }
 
-// 전역 함수로 등록 (인라인 이벤트 핸들러를 위해)
-window.toggleTodo = toggleTodo;
-window.deleteTodo = deleteTodo;
-window.editTodo = editTodo;
+    setLoading(true);
+
+    // 현재 위치 가져오기
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            const { latitude, longitude } = position.coords;
+            // 위도, 경도를 문자열로 변환하여 API에 전달
+            fetchWeather(`${latitude},${longitude}`);
+        },
+        (error) => {
+            setLoading(false);
+            console.error('위치 정보 가져오기 오류:', error);
+            let errorMsg = '위치 정보를 가져올 수 없습니다.';
+            
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    errorMsg = '위치 정보 접근이 거부되었습니다. 브라우저 설정에서 위치 권한을 허용해주세요.';
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    errorMsg = '위치 정보를 사용할 수 없습니다.';
+                    break;
+                case error.TIMEOUT:
+                    errorMsg = '위치 정보 요청 시간이 초과되었습니다.';
+                    break;
+            }
+            showError(errorMsg);
+        },
+        {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0
+        }
+    );
+});
 

@@ -1,48 +1,88 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>할 일 관리</title>
+    <title>오늘 날씨</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
+        <!-- 헤더: 앱 제목 -->
         <header>
-            <h1>📝 할 일 관리</h1>
-            <p class="subtitle">오늘의 일정을 체계적으로 관리하세요</p>
+            <h1>🌤️ 오늘 날씨</h1>
         </header>
 
-        <div class="todo-app">
-            <div class="input-section">
-                <div class="input-group">
-                    <input type="text" id="todoInput" placeholder="할 일을 입력하세요..." />
-                    <input type="date" id="todoDate" />
-                    <button id="addBtn" class="btn-add">추가</button>
+        <!-- API 키 입력 섹션 -->
+        <section class="api-key-section">
+            <label for="apiKey">WeatherAPI.com API 키:</label>
+            <div class="input-group">
+                <input type="password" id="apiKey" placeholder="API 키를 입력하세요">
+                <button id="saveApiKey">저장</button>
+            </div>
+            <small class="hint">API 키는 브라우저에 저장됩니다 (무료 회원가입: https://www.weatherapi.com)</small>
+        </section>
+
+        <!-- 검색 섹션 -->
+        <section class="search-section">
+            <div class="input-group">
+                <input type="text" id="cityInput" placeholder="도시명을 입력하세요 (예: Seoul, 서울)">
+                <button id="searchBtn">검색</button>
+            </div>
+            <button id="getLocationBtn" class="location-btn">📍 현재 위치 사용</button>
+        </section>
+
+        <!-- 날씨 정보 표시 영역 -->
+        <section class="weather-section" id="weatherSection" style="display: none;">
+            <div class="weather-card">
+                <div class="location-info">
+                    <h2 id="cityName">-</h2>
+                    <p id="currentDate">-</p>
                 </div>
                 
-            </div>
+                <div class="main-weather">
+                    <div class="temperature">
+                        <span id="temp">-</span>
+                        <span class="unit">°C</span>
+                    </div>
+                    <div class="condition">
+                        <img id="weatherIcon" src="" alt="날씨 아이콘">
+                        <p id="weatherCondition">-</p>
+                    </div>
+                </div>
 
-            <div class="filter-section">
-                <button class="filter-btn active" data-filter="all">전체</button>
-                <button class="filter-btn" data-filter="active">활성</button>
-                <button class="filter-btn" data-filter="completed">완료</button>
+                <div class="weather-details">
+                    <div class="detail-item">
+                        <span class="label">체감온도</span>
+                        <span class="value" id="feelsLike">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">습도</span>
+                        <span class="value" id="humidity">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">풍속</span>
+                        <span class="value" id="windSpeed">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">기압</span>
+                        <span class="value" id="pressure">-</span>
+                    </div>
+                </div>
             </div>
+        </section>
 
-            <div class="todo-list" id="todoList">
-                <!-- 할 일 목록이 여기에 동적으로 추가됩니다 -->
-            </div>
+        <!-- 에러 메시지 영역 -->
+        <div class="error-message" id="errorMessage" style="display: none;"></div>
 
-            <div class="stats-section">
-                <span id="todoCount">전체: 0</span>
-                <span id="activeCount">활성: 0</span>
-                <span id="completedCount">완료: 0</span>
-            </div>
+        <!-- 로딩 표시 -->
+        <div class="loading" id="loading" style="display: none;">
+            <div class="spinner"></div>
+            <p>날씨 정보를 불러오는 중...</p>
         </div>
     </div>
 
     <script src="script.js"></script>
-
 </body>
 </html>
+
