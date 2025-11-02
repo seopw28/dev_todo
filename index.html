@@ -6,6 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>To Do</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
+    <script src="firebase-config.js"></script>
 </head>
 <body>
     <div class="container">
@@ -48,7 +54,11 @@
         </a>
     </nav>
 
-    <script src="script.js"></script>
+    <!-- Firestore 버전 사용 -->
+    <script src="script-firestore.js"></script>
+    
+    <!-- localStorage 버전 사용 시 (위 script-firestore.js 대신 사용) -->
+    <!-- <script src="script.js"></script> -->
 
 </body>
 </html>
